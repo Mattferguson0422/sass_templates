@@ -1,0 +1,1491 @@
+@import 'compass/css3',
+'compass/support',
+'../../shared/sass/utilities/functions',
+'../../shared/sass/utilities/mixins',
+'../../shared/sass/utilities/extends';
+
+//
+// variables
+//===========================
+$mid-small: 550px;
+$end-small: 800px;
+$intermediate-break: 1000px;
+$gutter: 10px;
+$max-width: 940px;
+
+$primary: #003768;  // Navy Blue
+$primary-contrast: #eee7d8; // beige
+$accent: #96d4e7; // baby blue
+$accent-darker: #1e8ae7;
+$text: $primary;
+$alert: #c00;
+$border-color: #d2d2d2; // lite grey
+$teal: #1a92b2;
+
+// Fonts
+
+//
+// extends and Mixins
+//===========================
+
+// Breakpoints
+@mixin mid-small {
+    @include breakpoint($mid-small) {
+        @content;
+    }
+}
+
+@mixin end-small {
+    @include breakpoint($end-small) {
+        @content;
+    }
+}
+
+@mixin intermediate-break {
+    @include breakpoint($intermediate-break) {
+        @content;
+    }
+}
+
+// Centered Wrapper
+@mixin wrapper($max) {
+    margin: 0 auto;
+    max-width: $max;
+}
+
+%clear-fix {
+    &:after {
+        clear: both;
+        content: '';
+        display: block;
+    }
+}
+
+*[aria-hidden='true'] {
+    display: none;
+}
+
+%button-base {
+    text-align: center;
+    line-height: 1;
+    padding: 7.5px;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1.8rem;
+    border-radius: 5px;
+}
+
+@mixin buttons($width: auto, $background: $accent, $color: $primary) {
+    @extend %button-base;
+    width: $width;
+    background: $background;
+    color: $color;
+}
+
+// For png images
+@mixin png($image, $color: transparent, $position: 0 0, $repeat: no-repeat) {
+    background: {
+        color: $color;
+        image: url('../v1_0/img/' + $image + '.png');
+        position: $position;
+        repeat: $repeat;
+    }
+}
+
+// Flexbox
+@mixin flex-box {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-direction: normal;
+    -moz-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: justify;
+    -moz-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-box-align: end;
+    -moz-box-align: end;
+    -webkit-align-items: flex-end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+}
+
+@mixin rotate($axis: 45deg) {
+    -webkit-transform: rotate($axis);
+    -moz-transform: rotate($axis);
+    -ms-transform: rotate($axis);
+    -o-transform: rotate($axis);
+    transform: rotate($axis);
+}
+
+@mixin triangle($color, $width, $height) {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: $height ($width/2) 0 ($width/2);
+    border-color: $color transparent transparent;
+}
+
+@mixin plus-minus($color, $width, $height, $top, $right) {
+    text-indent: -9999em;
+
+    &:before, &:after {
+        content: '';
+        display: block;
+        width: $width;
+        height: $height;
+        position: absolute;
+        background: $color;
+        top: $top;
+        right: $right;
+    }
+
+    &:before {
+        @include rotate(90deg);
+    }
+
+    // helper class needed to make a minus when opened.
+    &.opened:before  {
+        display: none;
+    }
+}
+
+// Used for scaling iframes
+//Function
+@function get-vw($target, $container-width) {
+    // 1 vw is equal to 1% of the viewport width
+    $vw-context: ($container-width * .01) * 1; // 1% viewport width
+    $vw-size: ($target/$vw-context) * 1;
+    @return #{$vw-size}vw;
+}
+
+//Mixin
+@mixin vw-height($min-height, $max-height, $container-width) {
+    min-height: $min-height;
+    max-height: $max-height;
+    height: get-vw($max-height, $container-width);
+}
+
+//default module styles
+//===========================
+//@import //'../../../company/shared/sass/modules/form',
+//'../../../company/shared/sass/modules/jobmatchingfilters',
+//'../../../company/shared/sass/modules/jobmatchingresults', 
+//'../../../company/shared/sass/modules/joblocationmap';
+//'../../../company/shared/sass/modules/relatedcontent';
+
+//
+// base layout
+//=================================================================================
+body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, img, ins, kbd, q, s, samp, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+// Border Box for all
+html {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 62.5%;
+}
+
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: inherit;
+    -moz-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+body {
+    color: $text;
+    font-size: 1.3rem;
+    font-family: $main-font;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    overflow-x: hidden;
+    min-width: 320px;
+    line-height: 1.2;
+}
+
+#page, #content {
+    @extend %clear-fix;
+}
+
+#content {
+    display: block;
+
+    .main-container {
+
+        @include end-small {
+        }
+    }
+
+    aside {
+
+        @include end-small {
+            float: right;
+            width: 286px;
+        }
+    }
+}
+
+button {
+    border: 0 none;
+    background: none;
+}
+
+input[type='search'], input[type='button'], input[type='submit']  {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+}
+
+input, select {
+    width: 100%;
+    border: 1px solid $border-color;
+    background: #fff;
+    height: 33px;
+    font-size: 1.5rem;
+}
+
+input {
+    padding: 7px;
+}
+
+select {
+    padding: 5.5px;
+}
+
+label {
+    display: block;
+    margin-bottom: .5em;
+    font-size: 1.2rem
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+a {
+    color: $primary;
+    text-decoration: none;
+}
+
+a.access-link, .pagination-current-label b {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  text-indent: -9999em;
+  z-index: -1;
+}
+
+@include placeholder($text);
+
+//
+// Header Navigation and Logo
+//=================================================================================
+
+
+//
+// Banner
+//=================================================================================
+
+
+//
+// Search Form
+//=================================================================================
+.search-form {
+    padding: 15px;
+    background: $primary;
+    margin-bottom: 18px;
+    width: 100%;
+
+    @include end-small {
+        padding: 15px 20px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        margin-bottom: 0;
+        background: rgba(0,55,104,.9);
+    }
+
+    label, h2 {
+        color: #fff;
+    }
+
+    .search-form-fields {
+        font-size: 0;
+        display: block !important;
+
+        h2 {
+            font-size: 2.2rem;
+            font-weight: bold;
+
+            @include intermediate-break {
+                display: inline-block;
+                width: 180px;
+                margin-bottom: .25em;
+                font-size: 2.4rem;
+            }
+        }
+
+        p {
+            margin: 12px 0 0;
+            display: inline-block;
+            width: 100%;
+            vertical-align: bottom;
+
+            &.radius-wrapper {
+                width: calc(100% - 105px);
+                padding-right: 8px;
+                max-width: 224px;
+            }
+
+            @include end-small {
+                width: calc(50% - 140px);
+                padding-right: 9px;
+                margin: 0;
+
+                &.radius-wrapper {
+                    max-width: 175px;
+                }
+            }
+
+            @include intermediate-break {
+
+                &.keyword-wrapper {
+                    width: 240px;
+                }
+
+                &.location-wrapper {
+                    width: 217px;
+                }
+
+                &.radius-wrapper {
+                    width: 142px;
+                }
+            }
+        }
+
+        button {
+            @include buttons(105px);
+            vertical-align: bottom;
+
+            &:after {
+                content: url('../v1_0/img/mag.png');
+                position: relative;
+                top: 2px;
+                left: 5px;
+            }
+        }
+    }
+}
+
+
+// mindreader autocomplete search box =======================================================
+
+.mindreader-status {
+    display: block;
+    overflow: hidden;
+    position: absolute;
+    text-indent: -9999em;
+}
+
+.mindreader-results {
+    background: #fff;
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.3);
+    color: #000;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    text-align: left;
+    z-index: 9999;
+    
+    &:empty {
+        display: none;
+    }
+    
+    li {
+        margin: 0;
+    }
+    
+    a {
+        color: #000;
+        padding: 2px 5px;
+        text-decoration: none;
+        text-transform: capitalize;
+    }
+}
+
+//
+// Individual Modules
+//=================================================================================
+
+
+//
+// Job Alert Form
+// ==============================================================================
+.ja-form form {
+
+    @include intermediate-break {
+        padding-left: 45px;
+
+        #job &, .cp-template & {
+            padding-left: 0;
+        }
+    }
+
+    label {
+        font-size: 1.8rem;
+
+        @include end-small {
+            
+            #job &, .cp-template & {
+                font-size: 1.3rem;
+            }
+        }
+    }
+
+    p.form-field {
+        margin-bottom: 12px;
+
+        @include end-small {
+            margin-bottom: 18px;
+            float: left;
+            width: 25%;
+            padding: 0 18px 18px 0;
+            position: relative;
+
+            #job &, .cp-template & {
+                width: 50%;
+                padding: 0 18px 8px 0;
+                margin-bottom: 0;
+
+                &.submit {
+                    width: 100%;
+                    padding-right: 0;
+
+                    input {
+                        float: right;
+                    }
+                }
+            }
+
+            &.form-message {
+                float: none;
+                clear: both;
+            }
+        }
+    }
+
+    fieldset p {
+        margin-bottom: 12px;
+
+        @include end-small {
+            margin-bottom: 18px; 
+        }
+    }
+
+    legend, fieldset span {
+        display: none;
+    }
+
+    label {
+        margin-bottom: .5em;
+        display: block;
+        font-family: Arial, sans-serif;
+    }
+
+    fieldset {
+        margin: 20px 0 0;
+        padding: 16px 0 0;
+        position: relative;
+        border-top: 1px solid $border-color;
+
+        span.field-validation-error {
+            display: block;
+        }
+
+        p {
+            float: left;
+            width: 50%;
+
+            &:first-of-type {
+                padding-right: 4px;
+            }
+
+            &:last-of-type {
+                padding-left: 4px;
+            }
+        }
+
+        @include end-small {
+            clear: left;
+
+            p {
+                float: none;
+                max-width: 283px;
+                padding-right: 15px !important;
+                padding-left: 0 !important;
+                display: inline-block;
+                vertical-align: bottom;
+            }
+        }
+    }
+
+    button.keyword-add {
+        @include buttons(62px);
+        margin: 0 auto 18px;
+        display: block;
+
+        @include end-small {
+            display: inline-block;
+            vertical-align: bottom;
+
+            #job &, .cp-template & {
+                float: right;
+            }
+        }
+    }
+
+    input[type='submit'] {
+        @include buttons(100%, $primary, #fff);
+        max-width: 360px;
+        display: block;
+        margin: 0 auto;
+
+        @include end-small {
+            width: 88px;
+            margin: 0;
+        }
+    }
+
+    span.field-validation-error {
+        color: $alert;
+        font-size: 1.3rem;
+
+        @include end-small {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+    }
+    
+    ul {
+        @extend %clear-fix;
+        clear: both;
+        width: 100%;
+        padding: 5px 0 0;
+    }
+ 
+    li {
+        display: inline-block;
+        padding: 5px 45px 5px 10px;
+        margin: 0 10px 10px 0;
+        position: relative;
+        background: $primary;
+        
+        span {
+            margin: 0;
+            color: #fff;
+            display: block;
+        }
+    }
+    
+    .keyword-remove {
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        text-indent: -9999em;
+        width: 20px;
+    }
+    
+    .keyword-remove:after {
+        color: #fff;
+        content: '+';
+        @include rotate;
+        font: normal 24px/.65em Arial, sans-serif;
+        position: absolute;
+        right: 15px;
+        text-indent: 0;
+        top: 5px;
+    }
+}  
+
+p.form-field.form-message {
+    position: relative;
+    font-size: 1.2rem;
+    max-width: 296px;
+    width: 100%;
+    margin-bottom: 0;
+    
+    > * {
+        display: inline-block;
+    }
+    
+    a {
+        height: 1.25em;
+        min-height: 0;
+        overflow: hidden;
+        position: absolute;
+        right: 0;
+        text-align: left;
+        text-decoration: none;
+        text-indent: -9999em;
+        top: 3px;
+        width: 30px;
+        color: $text;
+    }
+
+    a:after {
+        border-radius: 10px;
+        content: '+';
+        display: inline-block;
+        font: normal 24px/.65em Arial, sans-serif;
+        margin: -7px 0 0 10px;
+        padding: 4px;
+        position: absolute;
+        right: 4px;
+        text-indent: 0;
+        text-shadow: none;
+        text-transform: lowercase;
+        top: 0;
+        @include rotate;
+    }
+}
+
+//
+// search results & Job Matching - result list
+// =================================================================================
+
+//
+// Job Matching Callout Link
+//
+.jm-link {
+    @include framed;
+    @include grey-shadow;
+    @extend %clear-fix;
+    color: #fff;
+    background: #663366;
+    padding: 25px;
+
+    @include end-small {
+        padding: 25px 35px;
+
+        #job & {
+            padding: 20px;
+        }
+    }
+
+    section {
+        text-align: center;
+
+        @include end-small {
+            float: left;
+            width: 75%;
+            text-align: left;
+
+            #job & {
+                width: 100%;
+            }
+        }
+    }
+
+    h3 {
+        font-size: 2.4rem;
+        margin-bottom: .5em;
+
+        @include end-small {
+            font-size: 2.6rem;
+            margin-bottom: .15em;
+
+            #job & {
+                margin-bottom: .5em;
+            }
+
+            #job & span {
+                display: block;
+            }
+        }
+    }
+
+    p {
+        line-height: 1.4;
+    }
+
+    a {
+        @include buttons(175px, $primary, #fff);
+        @include png(linkedin, $primary, 142px 6px);
+        background-size: 19px;
+        display: block;
+        margin: 20px auto 0;
+        padding: 7.5px 15px;
+        text-align: left;
+
+        @include end-small {
+            float: right;
+            margin: 10px 0 0;
+
+            #job & {
+                float: left;
+            }
+        }
+    }
+}
+
+
+// search results & Job Matching page styles
+
+#search-results-list, #job-matching-results {
+
+    > ul > li {
+        
+        border-bottom: 1px solid $primary-contrast;
+        padding: 16px 0;
+
+        &:last-of-type {
+            border-bottom: 0 none;
+        }
+
+        h2 {
+            color: $accent-darker;
+            font-size: 1.6rem;
+            font-weight: bold;
+            
+            &:hover {
+                text-decoration: underline;
+            }
+
+            @include mid-small {
+                font-weight: bold;
+            }
+        }
+
+        span {
+            display: block;
+            color: #000;
+        }
+    }
+}
+
+#search-results, #job-matching-results {
+    margin-bottom: 45px;
+
+    > h1 {
+        margin: 0 0 .5em;
+        font-size: 2.4rem;
+    }
+
+    button#filter-slideout-toggle {
+        @include buttons(100%, $primary, #fff);
+        border: none;
+        font-weight: bold;
+        margin-bottom: 15px;
+        
+        @include end-small {
+            display: none;
+        }
+    }
+}
+
+section#applied-filters {
+    margin-bottom: 25px;
+    
+    h2 {
+        margin: 0 5px 5px 0;
+        font-family: $main-font;
+        color: #555;
+    }
+    
+    li {
+        display: inline-block;
+        padding: 10px 15px;
+        margin: 0 5px 5px 0;
+        background: $primary;
+    }
+    
+    a {
+        color: #fff;
+    }
+    
+    a:after {
+        content: '+';
+        @include rotate;
+        margin-left: 15px;
+        display: inline-block;
+    }
+}
+
+ul#suggested-search-terms {
+    font-style: italic;
+    
+    a {
+        color: $text;
+        
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+//
+// search results - pagination
+// =================================================================================
+
+section#pagination-bottom {
+    padding: 10px 17px;
+    background: $primary-contrast;
+    @extend %clear-fix;
+
+    @include end-small {
+        padding: 10px 25px;
+    }
+
+    .pagination-page-count {
+        display: inline-block;
+        
+        > * {
+            display: inline-block;
+            font-size: 1.4rem;
+            margin-right: 12px;
+            font-weight: bold;
+        }
+
+        input, button {
+            @include buttons(68px, $primary, #fff);
+            font-size: 1.4rem;
+        }
+    }
+
+    .pagination-all {
+        display: none;
+    }
+
+    .pagination-paging {
+        @extend %clear-fix;
+        padding-top: 15px;
+
+        @include intermediate-break {
+            padding-top: 0;
+            width: 180px;
+            float: right;
+        }
+    }
+    
+    a {
+        @include buttons(auto, $primary, #fff);
+        font-size: 1.6rem;
+        font-weight: bold;
+        font-family: $secondary-font;
+        padding: 7.5px 10px;
+
+        &.disabled {
+            display: none !important;
+        }
+
+        &.prev {
+            float: left;
+        }
+
+        &.next {
+            float: right;
+        }
+
+        &.pagination-show-all {
+            width: 118px;
+        }
+    }
+}
+
+
+//
+// search results & job matching - filters
+// =================================================================================
+
+#search-filters {
+    z-index: 99999999 !important;
+    padding: 50px 0 45px;
+    position: fixed !important;
+    background: #fff;
+    font-size: 1.4rem;
+    
+
+    @include end-small {
+        position: static !important;
+        padding: 24px 0 0;
+    }
+    
+    h2 {
+        background: $primary;
+        font-size: 1.8rem;
+        padding: 15px;
+        color: #fff;
+        font-weight: bold;
+        margin: 0 0 5px;
+    }
+
+    section#filter-distance {
+        margin: 15px 25px;
+        font-weight: bold;
+    }
+}
+
+section#job-matching-logout {
+    background: $primary;
+    position: relative;
+    margin-bottom: 5px;
+    height: 66px;
+
+    img {
+        width: 66px;
+    }
+
+    h2 {
+        position: absolute;
+        bottom: 10px;
+        left: 76px;
+        color: #fff;
+    }
+
+    a {
+        color: #fff;
+        text-transform: uppercase;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+}
+
+.job-matching-location {
+    padding: 7px 15px;
+
+    label {
+        color: #808184;
+    }
+
+    > div {
+        @extend %clear-fix;
+    }
+
+    input {
+        width: 75%;
+        float: left;
+    }
+
+    button {
+        @include buttons(22%);
+        float: left;
+        margin: 0 0 0 3%;
+        font-size: 1.8rem;
+    }
+}
+
+#search-filters, #job-matching-filters {
+    .expandable {
+        margin: 0 0 5px;
+
+        legend {
+            display: block;
+            width: 100%;
+        }
+
+        fieldset {
+            margin-bottom: 5px;
+        }
+
+        a {
+            font-size: 1.8rem;
+            padding: 15px;
+            color: #fff;
+            font-weight: bold;
+            margin: 0 0 5px;
+            background: $teal;
+            display: block;
+
+            &:after {
+                content: '[+]';
+                float: right;
+                font-size: .75em;
+            }
+
+            &.expandable-child-open:after {
+                content: '[ - ]';
+            }
+        }
+    }
+}
+
+section[data-expandable='false'] {
+    .js & {
+        > a {
+            
+            &:after {
+                display: none;
+            }
+        }
+    }
+}
+
+.search-filter-list, .job-matching-filter-list{
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 15px;
+    max-height: 270px;
+    width: 100%;
+    background: #fff;
+    
+    li {
+        @extend %clear-fix;
+        color: #555;
+        padding: 7.5px 0;
+    }
+    
+    label {
+        cursor: pointer;
+        display: inline;
+        
+        b {
+            font-weight: normal;
+            
+            &:not(.filter) {
+                display: none;
+            }
+        }
+    }
+    
+    input[type='checkbox'] {
+        width: 15px;
+        height: 15px;
+        display: inline;
+        float: right;
+        padding: 0;
+    }
+}
+
+.js .search-filter-list {
+    display: none;
+}
+
+#search-filter-apply {
+    @include end-small {
+        display: none;
+    }
+}
+
+div#search-filter-controls {
+    text-align: right;
+    margin: 30px 0;
+}
+
+input#search-filter-clear {
+    @include buttons(auto, $primary, #fff);
+    font-weight: bold;
+    font-size: 1.6rem;
+    padding: 7.5px 15px;
+}
+
+@include filter-slide-out(800px, 0, search-filters);
+
+#filter-close-toggle {
+    background: none repeat scroll 0 0 #fff;
+    border: 0 none;
+    box-sizing: border-box;
+    display: block;
+    height: 2.25em;
+    font-size: 15px;
+    left: 0;
+    padding: 5px 10px;
+    position: absolute;
+    text-align: left;
+    top: 0;
+    width: 100%;
+    color: $text;
+    text-align: right;
+    
+    &.open {
+        position: fixed;
+    }
+    
+    @include end-small {
+        display: none;
+    }
+}
+//
+// job details - style overrides for ATS description
+// =================================================================================
+
+.job-description {
+    background: #f7f7f7;
+    margin: 0 -10px;
+    padding: 38px 15px 20px;
+
+    @include end-small {
+        @include framed;
+        @include grey-shadow;
+        margin: 0 0 0 1px;
+        padding: 25px;
+    }
+
+    > h1 {
+        font-size: 2.7rem;
+        padding-bottom: .25em;
+
+        + p {
+            font-size: 1.8rem;
+            color: $accent-darker;
+        }
+    }
+
+    .job-info {
+        display: block;
+
+        b:after {
+            content: ':';
+        }
+    }
+}
+
+.ats-description {
+    font-family: $main-font !important;
+    color: $text !important;
+    font-size: 1.2rem !important;
+    margin-top: 2em;
+
+    * {
+        line-height: 1.4em !important;
+        font-size: 1.2rem !important;
+
+        &:not(br):empty {
+            display: none;
+        }
+    }
+
+    //unique to Memorial Care
+    > div:first-of-type,
+    h1.no-change-header,
+    .editablesection > div:first-of-type {
+        display: none;
+    }
+
+    h1, h2, h3 {
+        font-family: $main-font !important;
+        font-weight: bold;
+    }
+
+    p, div, span, font {
+        font-size: 1em !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        text-indent: 0 !important;
+        color: $text !important;
+    }
+
+    p, div {
+        margin-bottom: 1em !important;
+    }
+
+    ul, ol {
+        list-style: disc !important;
+        margin-left: 20px !important;
+        margin-bottom: 1em !important;
+    }
+
+    td {
+        display: block;
+
+        &.JobDetailLabel {
+            font-weight: bold;
+            padding-top: 10px;
+        }
+    }
+
+    u {
+        text-decoration: none;
+    }
+}
+
+
+.job-apply {
+    @include buttons(100%, $primary, #fff);
+    font-family: $secondary-font;
+    font-weight: bold;
+    padding: 15px;
+    margin: 1em auto;
+
+    @include end-small {
+        width: auto;
+        padding: 12px 15px;
+        border-radius: 8px;
+    }
+}
+
+//
+// Job Alert Page Modules
+// =================================================================================
+#j-alerts {
+    
+    .main-container, aside {
+
+        form {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+
+            h1 {
+                font-size: 2.4rem;
+                margin-bottom: .5em;
+            }
+            
+            button {
+                @include buttons(auto);
+            }
+
+            li {
+                margin-bottom: 15px;
+            
+                button {
+                    margin-left: 20px;
+                }
+            }
+        }
+    }
+    
+    form#job-alert-list-editor {
+        max-width: 500px;
+
+        input {
+            border: 1px solid #999;
+        }
+
+        p.job-alert-list-field {
+            margin-bottom: 10px;
+        }
+    }
+
+    form#job-alert-unsubscribe {
+        
+        input, label {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        input {
+            width: 25px;
+            margin: 0;
+            height: auto;
+        }
+
+        label {
+            width: calc(100% - 30px);
+        }
+
+        button {
+            margin-top: 15px;
+        }
+    }
+}
+
+//
+// Location Page
+// =================================================================================
+.location-callout {
+    @include framed;
+    @include grey-shadow;
+    background: $teal;
+    margin-bottom: 10px;
+    color: #fff;
+
+    &:before {
+        content: '';
+        @include png(google-map, transparent, center center);
+        background-size: cover;
+        padding: 90px 0;
+        display: block;
+
+        @include end-small {
+            padding: 80px 0;
+        }
+    }
+
+    h2 {
+        font-size: 3rem;
+        padding: 20px 20px 5px;
+    }
+
+    p {
+        padding: 0 20px 20px;
+    }
+
+    a {
+        @include buttons(auto, $primary, #fff);
+        padding: 10px 15px;
+        font-family: $secondary-font;
+        font-weight: bold;
+        border-radius: 8px;
+        margin: 0 20px 20px;
+    }
+}
+
+.js .job-map .job-map-canvas {
+    width: 100%;
+}
+
+.job-map-controls {
+    margin: 20px 0;
+    @extend %clear-fix;
+
+    h3 {
+        font-size: 2.4rem;
+        margin-bottom: .5em;
+    }
+
+    form {
+        padding-bottom: 30px;
+    }
+
+    form p {
+        margin-bottom: 1em;
+    }
+
+    input[type='submit'] {
+        @include buttons(120px, $primary, #fff);
+        font-family: $secondary-font;
+        padding: 10px 15px;
+        font-weight: bold;
+        border-radius: 8px;
+        height: auto;
+        float: right;
+    }
+}
+
+.job-map-nearby {
+    margin-bottom: 15px;
+    max-width: 650px;
+
+    @include end-small {
+        float: left;
+        width: 49%;
+        max-width: 452px;
+    }
+
+    ul {
+        font-size: 0;
+    }
+
+    li {
+        display: inline-block;
+        max-width: 176px;
+        margin: 0 16px 16px 0;
+        width: calc(50% - 16px);
+
+        a {
+            @include buttons(100%, $teal, #fff);
+            border-radius: 0;
+        }
+    }
+}
+
+.job-map-directions {
+    @include end-small {
+        float: right;
+        width: 49%;
+        max-width: 445px;
+    }
+}
+
+// Override system
+.job-map .job-map-directions input:not([type="submit"]), .job-map .job-map-directions select {
+    width: 100%;
+    border: 1px solid #d2d2d2;
+    background: #fff;
+    height: 33px;
+    font-size: 1.5rem;
+    padding: 7px;
+    color: #999;
+}
+
+.job-map .job-map-directions form {
+    display: block;
+    @extend %clear-fix;
+}
+
+//
+// Error page, Unsubscribe, Alert Verify
+// =================================================================================
+#content > .max-wrapper > .short-message {
+    padding: 0 $gutter 80px;
+    
+    h1 {
+        font-size: 2rem;
+        margin-bottom: .5em;
+    }
+    
+    a {
+        color: $accent-darker;
+        display: inline;
+    }
+}
+
+//
+// Footer
+// =================================================================================
+
+
+//
+// Site Map
+// =================================================================================
+
+#sitemap #content .max-wrapper > div {
+    padding: 0 $gutter 25px;
+    text-align: center;
+
+    h2 {
+        font-size: 2rem;
+        margin-bottom: .5em;
+    }
+    
+    @include end-small {
+        float: left;
+        width: 33%;
+        text-align: left;
+    }
+}
