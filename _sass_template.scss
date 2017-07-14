@@ -12,7 +12,7 @@ $primary-contrast: #eee7d8; // beige
 $accent: #96d4e7; // baby blue
 $text: #333;
 $alert: #c00;
-$border-color: #d2d2d2; // lite grey
+$links: #0047ba; // blue
 
 // Place Fonts
 $main-font: Verdana, Arial, sans-serif;
@@ -54,12 +54,12 @@ $secondary-font: Arial, sans-serif;
 }
 
 // Clear Fix
-%clear-fix {
-    &:after {
-        clear: both;
-        content: '';
-        display: block;
-    }
+@mixin clear-fix {
+   &:after {
+       clear: both;
+       content: '';
+       display: block;
+   }
 }
 
 // Buttons
@@ -67,17 +67,22 @@ $secondary-font: Arial, sans-serif;
     text-align: center;
     line-height: 1;
     padding: 7.5px;
-    display: inline-block;
     cursor: pointer;
-    font-size: 1.8rem;
-    border-radius: 5px;
 }
 
-@mixin buttons($width: auto, $background: $accent, $color: $primary) {
-    @extend %button-base;
-    width: $width;
-    background: $background;
-    color: $color;
+@mixin buttons($width, $color, $background) {
+   @extend %button-base;
+   width: $width;
+   color: $color;
+   background: $background;
+   font-size: $font-size;
+   transition: opacity .3s;
+
+   &:hover {
+       background: $color;
+       color: $background;
+       color: #fff;
+   }
 }
 
 // For png images
@@ -91,39 +96,54 @@ $secondary-font: Arial, sans-serif;
 }
 
 // Flexbox
-%flex-box {
-    @include end-small {
-        display: -webkit-box;
-        display: -moz-box;
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        -webkit-box-direction: normal;
-        -moz-box-direction: normal;
-        -webkit-box-orient: horizontal;
-        -moz-box-orient: horizontal;
-        -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-flex-wrap: wrap;
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        -webkit-box-pack: justify;
-        -moz-box-pack: justify;
-        -webkit-justify-content: space-between;
-        -ms-flex-pack: justify;
-        justify-content: space-between;
-        -webkit-align-content: stretch;
-        -ms-flex-line-pack: stretch;
-        align-content: stretch;
-        -webkit-box-align: end;
-        -moz-box-align: end;
-        -webkit-align-items: flex-end;
-        -ms-flex-align: end;
-        align-items: flex-end;
-    }
+@mixin flex-box {
+   display: -webkit-box;
+   display: -moz-box;
+   display: -ms-flexbox;
+   display: -webkit-flex;
+   display: flex;
+   -webkit-box-direction: normal;
+   -moz-box-direction: normal;
+   -webkit-box-orient: horizontal;
+   -moz-box-orient: horizontal;
+   -webkit-flex-direction: row;
+   -ms-flex-direction: row;
+   flex-direction: row;
+   -webkit-flex-wrap: wrap;
+   -ms-flex-wrap: wrap;
+   flex-wrap: wrap;
+   -webkit-box-pack: justify;
+   -moz-box-pack: justify;
+   -webkit-justify-content: space-between;
+   -ms-flex-pack: justify;
+   justify-content: space-between;
+   -webkit-align-content: stretch;
+   -ms-flex-line-pack: stretch;
+   align-content: stretch;
+   -webkit-box-align: start;
+   -moz-box-align: start;
+   -webkit-align-items: flex-start;
+   -ms-flex-align: start;
+   align-items: flex-start;
 }
 
+// When using be sure parent element is relative;
+@mixin centered($horizontal: true, $vertical: true) {
+ position: absolute;
+ @if ($horizontal and $vertical) {
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+ } @else if ($horizontal) {
+   left: 50%;
+   transform: translate(-50%, 0);
+ } @else if ($vertical) {
+   top: 50%;
+   transform: translate(0, -50%);
+ }
+}
+
+// Rotate
 @mixin rotate($axis: 45deg) {
     -webkit-transform: rotate($axis);
     -moz-transform: rotate($axis);
@@ -166,17 +186,14 @@ $secondary-font: Arial, sans-serif;
 }
 
 // Style Placeholder text
-@mixin placeholder($color) {
-    &::-webkit-input-placeholder {
-       color: $color;  
-    }
-    &::-moz-placeholder {
-       color: $color;  
-    }
-    &:-ms-input-placeholder {
-       color: $color;  
-    } 
+@mixin input-placeholder {
+    &.placeholder { @content; }
+    &:-moz-placeholder { @content; }
+    &::-moz-placeholder { @content; }
+    &:-ms-input-placeholder { @content; }
+    &::-webkit-input-placeholder { @content; }
 }
+
 
 // Used for scaling iframes
 //Function
@@ -204,8 +221,8 @@ del, dfn, img, ins, kbd, q, s, samp, tt, var,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
     margin: 0;
@@ -249,48 +266,68 @@ body {
 }
 
 button {
-    border: 0 none;
-    background: none;
+   border: 0 none;
+   background: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
 }
 
-input[type='search'], input[type='button'], input[type='submit']  {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-appearance: none;
+input[type='search'] {
+   -webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+   box-sizing: border-box;
+   -webkit-appearance: none;
+}
+
+input[type='submit'] {
+   -webkit-appearance: none;
 }
 
 input, select {
-    width: 100%;
-    border: 1px solid $border-color;
-    background: #fff;
-    height: 33px;
-    font-size: 1.5rem;
+   width: 100%;
+   background: #fff;
+   font-size: 1.6rem;
+   height: 39px;
+   border-radius: 0;
 }
 
 input {
-    padding: 7px;
+   padding: 9px 10px;
 }
 
 select {
-    padding: 5.5px;
+   padding: 4px;
 }
 
-label {
-    display: block;
-    margin-bottom: .5em;
-    font-size: 1.2rem
-}
-
-ul {
-    list-style: none;
+ol, ul {
+   list-style: none;
 }
 
 img {
-    max-width: 100%;
+   max-width: 100%;
 }
 
 a {
-    color: $primary;
     text-decoration: none;
+}
+
+// For Wrapping Iframe videos responsively
+.video-wrapper {
+   position: relative;
+   padding-bottom: 46.25%;
+   padding-top: 9.25%;
+   height: 0;
+   font-size: 0;
+
+   iframe, img {
+       position: absolute;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+   }
+
+   img {
+     cursor: pointer;
+   }
 }
